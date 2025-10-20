@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ejercicio1.Models
 {
+    [Serializable]
     internal class Persona:IComparable<Persona>
     {
         string nombre;
@@ -26,7 +27,7 @@ namespace Ejercicio1.Models
             return $"{Nombre} (DNI: {Dni})";
         }
 
-        public int Compareto(Persona other)
+        public int CompareTo(Persona other)
         {
             if (other == null) return -1;
             return this.Dni.CompareTo(other.Dni);
