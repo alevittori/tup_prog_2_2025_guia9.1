@@ -73,6 +73,7 @@
             btnExportar.TabIndex = 3;
             btnExportar.Text = "Exportar Cuentas";
             btnExportar.UseVisualStyleBackColor = true;
+            btnExportar.Click += btnExportar_Click;
             // 
             // btnResguardar
             // 

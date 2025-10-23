@@ -122,5 +122,16 @@ namespace Ejercicio1.Models
 
             }
         }
+
+        public List<Cuenta> ObtenerCuentasConSaldoMayorA(double saldo)
+        {
+            List<Cuenta> lista = new List<Cuenta>();
+            foreach(Cuenta c in listCuentas)
+            {
+                if(c.Saldo > saldo) {  lista.Add(c); }
+            }
+
+            return lista;
+        }
     }
 }

@@ -1,4 +1,6 @@
 using Ejercicio1.Models;
+using System.Net;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ejercicio1
 {
@@ -32,14 +34,16 @@ namespace Ejercicio1
         {
             OpenFileDialog openDialog = new OpenFileDialog
             {
-                InitialDirectory = AppDomain.CurrentDomain.BaseDirectory
+                InitialDirectory = AppDomain.CurrentDomain.BaseDirectory,
+                Title = "Importar Cuentas"
+
             };
 
-           
-            if(openDialog.ShowDialog() != DialogResult.OK){ return; }
+
+            if (openDialog.ShowDialog() != DialogResult.OK) { return; }
             try
             {
-                using(StreamReader lector = new StreamReader(openDialog.FileName))
+                using (StreamReader lector = new StreamReader(openDialog.FileName))
                 {
                     string cabecera = lector.ReadLine(); // descartamos la cabecera
 
@@ -47,10 +51,10 @@ namespace Ejercicio1
                     {
                         //DNI; nombre; número de cuenta; saldo
                         string[] grupo = lector.ReadLine().Split(';');
-                        
+
                         if (grupo.Length != 4)
                             return;
-                        
+
                         #region Parsing
                         int dni = Convert.ToInt32(grupo[0]);
                         string nombre = grupo[1];
@@ -65,7 +69,32 @@ namespace Ejercicio1
                     }
                 }
 
-            }catch(Exception ex) {MessageBox.Show(ex.Message,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error); }
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+        }
+
+        private void btnExportar_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Title = "Guarde las Cuentas"
+            };
+
+            
+            if(saveFileDialog.ShowDialog() != DialogResult.OK) return;
+            try
+            {
+                using(StreamWriter sr = new StreamWriter(saveFileDialog.FileName))
+                {
+                    string cabecera = "DNI; nombre; número de cuenta; saldo";
+                    sr.WriteLine(cabecera);
+                    foreach (Cuenta aExportar in miBanco.ObtenerCuentasConSaldoMayorA(10000))
+                    {
+                        sr.WriteLine($"{aExportar.Titular.Dni};{aExportar.Titular.Nombre};{aExportar.Numero};{aExportar.Saldo}");
+                    }
+                }
+                MessageBox.Show("Se Exporto correctamente", "Exito");
+            }catch(Exception ex) { MessageBox.Show(ex.Message, "Error"); }
         }
     }
 }
