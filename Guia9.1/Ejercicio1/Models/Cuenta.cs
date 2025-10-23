@@ -28,13 +28,17 @@ namespace Ejercicio1.Models
             fecha = DateTime.Now;
         }
 
-        public Cuenta(int num, Persona titular, DateTime fecha, double saldo) {
+        public Cuenta(int num, Persona titular, DateTime fecha, double saldo ) {
             Titular = titular;
             Numero = num;
             Fecha = fecha;
             Saldo = saldo;
         }
 
+        public void ActualizarSaldo(double saldo)
+        {
+            Saldo = saldo;
+        }
         public int CompareTo(Cuenta other)
         {
             if (other == null ) return -1;
@@ -43,7 +47,7 @@ namespace Ejercicio1.Models
 
         public override string ToString()
         {
-            return $"{Numero} - Titutalar: {Titular.ToString()}. Saldo: {Saldo:c}";
+            return @$"{Numero}          {Titular.Nombre}            {Saldo:c}";
         }
     }
 }

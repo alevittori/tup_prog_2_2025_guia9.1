@@ -63,7 +63,7 @@ namespace Ejercicio1.Models
         {
             return listCuentas.Any(cuentaEnLista => cuentaEnLista.Numero ==  cuentaABuscar.Numero);
         }
-        public Cuenta AgregarCuenta(int numeroDeCuenta, int dniDelTitular, string nombreDelTitular)
+        public Cuenta AgregarCuenta(int numeroDeCuenta, int dniDelTitular, string nombreDelTitular, double saldo = 0)
         {
 
             if (string.IsNullOrWhiteSpace(nombreDelTitular))
@@ -86,12 +86,25 @@ namespace Ejercicio1.Models
             }
             
             //aca deveriamos validar que la cuenta no exista
-            if (nuevaCuenta != null && !cuentaExist(nuevaCuenta)) 
+            if (nuevaCuenta != null)
             { 
-                listCuentas.Add(nuevaCuenta);
-                listCuentas.Sort();
-                return nuevaCuenta; 
+                if(!cuentaExist(nuevaCuenta))
+                {
+                    nuevaCuenta.ActualizarSaldo(saldo);
+                    listCuentas.Add(nuevaCuenta);
+                    listCuentas.Sort();
+                    return nuevaCuenta; 
+
+                }else
+                {
+                    //si la cuenta existe solo actualizar el salgo como pide en el partado c de Importacion
+                    Cuenta aModificar = listCuentas.FirstOrDefault(c => c.Numero == numeroDeCuenta);
+                    if (aModificar != null) { aModificar.ActualizarSaldo(nuevaCuenta.Saldo); }
+
+                }
             }
+
+            
 
 
             return null;
@@ -100,6 +113,9 @@ namespace Ejercicio1.Models
 
         public void ListarCuentas(ListBox lista)
         {
+                lista.Items.Clear();
+                lista.Items.Add(@"Cuenta n° | Nombre       |     Saldo");
+                lista.Items.Add(@"--------------------------------------------");
             foreach(Cuenta cuenta in listCuentas)
             {
                 lista.Items.Add(cuenta);

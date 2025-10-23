@@ -63,6 +63,7 @@
             btnImportar.TabIndex = 2;
             btnImportar.Text = "Importar Cuentas";
             btnImportar.UseVisualStyleBackColor = true;
+            btnImportar.Click += btnImportar_Click;
             // 
             // btnExportar
             // 
@@ -99,6 +100,7 @@
             btnSalir.TabIndex = 6;
             btnSalir.Text = "Salir";
             btnSalir.UseVisualStyleBackColor = true;
+            btnSalir.Click += btnSalir_Click;
             // 
             // Form1
             // 
