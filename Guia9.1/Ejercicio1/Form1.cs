@@ -1,5 +1,6 @@
 using Ejercicio1.Models;
 using System.Net;
+using System.Runtime.Serialization.Formatters.Binary;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ejercicio1
@@ -7,6 +8,7 @@ namespace Ejercicio1
     public partial class Form1 : Form
     {
         Banco miBanco;
+        string nombreBackup = "Ejercicio1.dat";
         public Form1()
         {
             InitializeComponent();
@@ -80,11 +82,11 @@ namespace Ejercicio1
                 Title = "Guarde las Cuentas"
             };
 
-            
-            if(saveFileDialog.ShowDialog() != DialogResult.OK) return;
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
             try
             {
-                using(StreamWriter sr = new StreamWriter(saveFileDialog.FileName))
+                using (StreamWriter sr = new StreamWriter(saveFileDialog.FileName))
                 {
                     string cabecera = "DNI; nombre; número de cuenta; saldo";
                     sr.WriteLine(cabecera);
@@ -94,7 +96,40 @@ namespace Ejercicio1
                     }
                 }
                 MessageBox.Show("Se Exporto correctamente", "Exito");
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            /*
+            if (!File.Exists(nombreBackup)) { return ; }
+            try
+            {
+                using FileStream fs = new FileStream(nombreBackup, FileMode.Open);
+                BinaryFormatter formatter = new BinaryFormatter();
+                miBanco = (Banco)formatter.Deserialize(fs);
+
             }catch(Exception ex) { MessageBox.Show(ex.Message, "Error"); }
+            */
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            /*
+            try
+            {
+                using FileStream fs = new FileStream(nombreBackup, FileMode.Create);
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(fs, miBanco);
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
+            */
+        }
+
+        private void btnResguardar_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

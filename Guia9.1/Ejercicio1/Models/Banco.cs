@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ejercicio1.Models
 {
-
+    [Serializable]
     internal class Banco
     {
         List<Persona> listClientes;
@@ -133,5 +133,19 @@ namespace Ejercicio1.Models
 
             return lista;
         }
+
+        public string[] ObtenerListaStringCuentas() 
+        {
+            string[] listacuenta = new string[CantidadCuentas];
+            int n = 0;
+            foreach (Cuenta c in listCuentas)
+            {
+                //"DNI; nombre; número de cuenta; saldo";
+                listacuenta[n++] = $"{this.GetType().Name};";
+            }
+        
+        }
+
+        public string[] ObtenerListaStringClientes() { }
     }
 }

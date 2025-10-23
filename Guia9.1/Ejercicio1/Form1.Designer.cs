@@ -83,6 +83,7 @@
             btnResguardar.TabIndex = 4;
             btnResguardar.Text = "Resguardar ( Backup )";
             btnResguardar.UseVisualStyleBackColor = true;
+            btnResguardar.Click += btnResguardar_Click;
             // 
             // btnRestaurar
             // 
@@ -117,6 +118,8 @@
             Controls.Add(lBDetalles);
             Name = "Form1";
             Text = "Form1";
+            FormClosing += Form1_FormClosing;
+            Load += Form1_Load;
             ResumeLayout(false);
         }
 
