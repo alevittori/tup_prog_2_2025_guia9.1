@@ -6,11 +6,26 @@ using System.Threading.Tasks;
 
 namespace Ejercicio1.Models
 {
-    
+
     internal class Banco
     {
         List<Persona> listClientes;
         List<Cuenta> listCuentas;
+
+        public int CantidadCuentas { get { return listCuentas.Count; } private set { } }
+        public int CantidadClientes {  get { return listClientes.Count; } private set { }  }
+
+        public Cuenta this[int idx]
+        {
+            get
+            {
+                if (idx >= 0 && idx < listCuentas.Count) 
+                    return listCuentas[idx];
+                else
+                    throw new IndexOutOfRangeException("Indice fuera de rango");
+            }
+                
+        }
 
         public Banco()
         {
@@ -21,7 +36,7 @@ namespace Ejercicio1.Models
         bool clienteExist(int dniCliente)//recomendado para listas grandes
         {
             //SI LO HAGO CON BINARYSEARCH
-            listClientes.Sort();//ORDERNAR LA LISTA, POR NUMERO DE CUENTA, PROGRAMADO EN EL COMPARETO DE CUENTA
+            //listClientes.Sort();//ORDERNAR LA LISTA, POR NUMERO DE CUENTA, PROGRAMADO EN EL COMPARETO DE CUENTA
             Persona persona = new Persona("persona",dniCliente);// creamo el objero placebo para buscar
 
 
@@ -37,7 +52,7 @@ namespace Ejercicio1.Models
 
         bool cuentaExist(int numeroDeCuenta)
         {
-            listCuentas.Sort();
+           // listCuentas.Sort();
             Persona p = new Persona();
             Cuenta cuentaABuscar = new Cuenta(numeroDeCuenta, p);
             int resultadoBusqueda = listCuentas.BinarySearch(cuentaABuscar);
@@ -50,18 +65,46 @@ namespace Ejercicio1.Models
         }
         public Cuenta AgregarCuenta(int numeroDeCuenta, int dniDelTitular, string nombreDelTitular)
         {
+
+            if (string.IsNullOrWhiteSpace(nombreDelTitular))
+                throw new ArgumentException("El nombre no puede estar vacío.");
+            if (numeroDeCuenta <= 0)
+                throw new ArgumentException("El número de cuenta debe ser positivo.");
+
+
+
             Persona titular = new Persona(nombreDelTitular, dniDelTitular);
             Cuenta nuevaCuenta = new Cuenta(numeroDeCuenta, titular);
 
+
+
             //ACA DEBERIAAMOS VALIDAR QUE EL CLIENTE NO EXISTA
-            if (titular != null && !clienteExist(titular)) { listClientes.Add(titular); }
+            if (titular != null && !clienteExist(titular)) 
+            { 
+                listClientes.Add(titular);
+                listClientes.Sort();
+            }
             
             //aca deveriamos validar que la cuenta no exista
-            if (nuevaCuenta != null && !cuentaExist(nuevaCuenta)) { listCuentas.Add(nuevaCuenta); return nuevaCuenta; }
+            if (nuevaCuenta != null && !cuentaExist(nuevaCuenta)) 
+            { 
+                listCuentas.Add(nuevaCuenta);
+                listCuentas.Sort();
+                return nuevaCuenta; 
+            }
 
 
             return null;
 
+        }
+
+        public void ListarCuentas(ListBox lista)
+        {
+            foreach(Cuenta cuenta in listCuentas)
+            {
+                lista.Items.Add(cuenta);
+
+            }
         }
     }
 }
