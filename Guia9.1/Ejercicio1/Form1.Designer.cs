@@ -93,6 +93,7 @@
             btnRestaurar.TabIndex = 5;
             btnRestaurar.Text = "Restaurar ( Restore )";
             btnRestaurar.UseVisualStyleBackColor = true;
+            btnRestaurar.Click += btnRestaurar_Click;
             // 
             // btnSalir
             // 

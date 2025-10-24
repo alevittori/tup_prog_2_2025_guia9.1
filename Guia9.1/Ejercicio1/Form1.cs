@@ -13,11 +13,13 @@ namespace Ejercicio1
         {
             InitializeComponent();
             miBanco = new Banco();
+            /*
             miBanco.AgregarCuenta(377, 33502599, "Ale");
             miBanco.AgregarCuenta(844, 33502599, "Ale");
             miBanco.AgregarCuenta(501, 33502899, "Stefy");
             miBanco.AgregarCuenta(704, 33422599, "Sheila");
             miBanco.AgregarCuenta(956, 33509699, "Raul");
+            */
         }
 
         private void btnVerCuentas_Click(object sender, EventArgs e)
@@ -25,6 +27,32 @@ namespace Ejercicio1
             //lBDetalles.Items.Clear();
             //foreach(Cuenta cuenta in )
             miBanco.ListarCuentas(lBDetalles);
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            /*
+            if (!File.Exists(nombreBackup)) { return ; }
+            try
+            {
+                using FileStream fs = new FileStream(nombreBackup, FileMode.Open);
+                BinaryFormatter formatter = new BinaryFormatter();
+                miBanco = (Banco)formatter.Deserialize(fs);
+
+            }catch(Exception ex) { MessageBox.Show(ex.Message, "Error"); }
+            */
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            /*
+            try
+            {
+                using FileStream fs = new FileStream(nombreBackup, FileMode.Create);
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(fs, miBanco);
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
+            */
         }
 
         private void btnSalir_Click(object sender, EventArgs e)
@@ -100,32 +128,6 @@ namespace Ejercicio1
             catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            /*
-            if (!File.Exists(nombreBackup)) { return ; }
-            try
-            {
-                using FileStream fs = new FileStream(nombreBackup, FileMode.Open);
-                BinaryFormatter formatter = new BinaryFormatter();
-                miBanco = (Banco)formatter.Deserialize(fs);
-
-            }catch(Exception ex) { MessageBox.Show(ex.Message, "Error"); }
-            */
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            /*
-            try
-            {
-                using FileStream fs = new FileStream(nombreBackup, FileMode.Create);
-                BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(fs, miBanco);
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
-            */
-        }
 
         private void btnResguardar_Click(object sender, EventArgs e)
         {
@@ -135,33 +137,69 @@ namespace Ejercicio1
                 Title = "Resguardar Datos"
             };
 
-            if(saveDialog.ShowDialog() != DialogResult.OK) { return; }
+            if (saveDialog.ShowDialog() != DialogResult.OK) { return; }
 
             FileStream fs = null;
             StreamWriter sr = null;
             try
             {
-                fs = new FileStream(saveDialog.FileName, FileMode.OpenOrCreate , FileAccess.Write);
+                fs = new FileStream(saveDialog.FileName, FileMode.OpenOrCreate, FileAccess.Write);
                 sr = new StreamWriter(fs);
 
                 string[] clientes = miBanco.ObtenerListaStringClientes();
                 string[] cuentas = miBanco.ObtenerListaStringCuentas();
                 sr.WriteLine("TIPO;DNI;NOMBRE;NUMERODECUENTA;SALDO");
-                foreach(string cliente in clientes)
+                foreach (string cliente in clientes)
                 {
                     sr.WriteLine(cliente);
                 }
-                foreach(string cuenta in cuentas)
+                foreach (string cuenta in cuentas)
                 {
                     sr.WriteLine(cuenta);
                 }
 
                 MessageBox.Show("Reslpado Exitoso");
-            }catch(Exception ex) { MessageBox.Show(ex.Message); }
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
             finally
             {
-                if(sr!=null) sr.Close();
-                if(fs!=null) fs.Close();
+                if (sr != null) sr.Close();
+                if (fs != null) fs.Close();
+            }
+        }
+
+        private void btnRestaurar_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openDialog = new OpenFileDialog
+            {
+                InitialDirectory = Application.StartupPath,
+                Title = "Restaurar desde archivo"
+            };
+
+            if (openDialog.ShowDialog() != DialogResult.OK) return;
+
+            Banco bancoTemporal = new Banco();
+
+            try
+            {
+                using FileStream fs = new FileStream(openDialog.FileName, FileMode.Open, FileAccess.Read);
+                using StreamReader sr = new StreamReader(fs);
+
+                bancoTemporal.RestaurarDesdeStream(sr);
+                DialogResult confirmar = MessageBox.Show("Si restaura se perdera toda la informacion del contexto actual. ¿Desea Proseguir?","Seguro de Restaurar?",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (confirmar == DialogResult.Yes)
+                {
+                    miBanco = bancoTemporal;
+                    MessageBox.Show("Restauración exitosa");
+                }
+                else
+                {
+                    MessageBox.Show("No se realizo restauracion", "Restauracion Cancelada", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al restaurar: " + ex.Message);
             }
         }
     }

@@ -33,36 +33,6 @@ namespace Ejercicio1.Models
             listCuentas = new List<Cuenta>();
         }
 
-        bool clienteExist(int dniCliente)//recomendado para listas grandes
-        {
-            //SI LO HAGO CON BINARYSEARCH
-            //listClientes.Sort();//ORDERNAR LA LISTA, POR NUMERO DE CUENTA, PROGRAMADO EN EL COMPARETO DE CUENTA
-            Persona persona = new Persona("persona",dniCliente);// creamo el objero placebo para buscar
-
-
-            int resultadoBusqueda = listClientes.BinarySearch(persona);
-
-            return resultadoBusqueda >= 0;
-
-        }
-        bool clienteExist(Persona clienteABuscar)//recomendado para listas pequeñas
-        {
-            return listClientes.Any(clienteEnLista => clienteEnLista.Dni == clienteABuscar.Dni);
-        }
-
-        bool cuentaExist(int numeroDeCuenta)
-        {
-           // listCuentas.Sort();
-            Persona p = new Persona();
-            Cuenta cuentaABuscar = new Cuenta(numeroDeCuenta, p);
-            int resultadoBusqueda = listCuentas.BinarySearch(cuentaABuscar);
-            return resultadoBusqueda >= 0;
-
-        }
-        bool cuentaExist(Cuenta cuentaABuscar)
-        {
-            return listCuentas.Any(cuentaEnLista => cuentaEnLista.Numero ==  cuentaABuscar.Numero);
-        }
         public Cuenta AgregarCuenta(int numeroDeCuenta, int dniDelTitular, string nombreDelTitular, double saldo = 0)
         {
 
@@ -161,5 +131,73 @@ namespace Ejercicio1.Models
             return listaclientes;
 
         }
+
+        public void RestaurarDesdeStream(StreamReader sr)
+        {
+            string linea;
+            bool primera = true;
+
+            while ((linea = sr.ReadLine()) != null)
+            {
+                if (primera) { primera = false; continue; } // Saltar cabecera
+
+                string[] campos = linea.Split(';');
+                string tipo = campos[0].Trim();
+
+                if (tipo == "Persona")
+                {
+                    string nombre = campos[1].Trim();
+                    int dni = int.Parse(campos[2].Trim());
+                    listClientes.Add( new Persona(nombre, dni));
+                }
+                if(tipo == "Cuenta")
+                {
+                    int dni = int.Parse(campos[1].Trim());
+                    string nombre = campos[2].Trim();
+                    int numero = int.Parse(campos[3].Trim());
+                    double saldo = double.Parse(campos[4].Trim());
+
+                   AgregarCuenta(numero,dni,nombre,saldo); // uso este ya que esta testeado y tiene el formato deseado
+                }
+            }
+        }
+
+
+        
+
+
+        #region VALIDADORES DE EXISTENCIA
+        bool clienteExist(int dniCliente)//recomendado para listas grandes
+        {
+            //SI LO HAGO CON BINARYSEARCH
+            //listClientes.Sort();//ORDERNAR LA LISTA, POR NUMERO DE CUENTA, PROGRAMADO EN EL COMPARETO DE CUENTA
+            Persona persona = new Persona("persona",dniCliente);// creamo el objero placebo para buscar
+
+
+            int resultadoBusqueda = listClientes.BinarySearch(persona);
+
+            return resultadoBusqueda >= 0;
+
+        }
+        bool clienteExist(Persona clienteABuscar)//recomendado para listas pequeñas
+        {
+            return listClientes.Any(clienteEnLista => clienteEnLista.Dni == clienteABuscar.Dni);
+        }
+
+        bool cuentaExist(int numeroDeCuenta)
+        {
+           // listCuentas.Sort();
+            Persona p = new Persona();
+            Cuenta cuentaABuscar = new Cuenta(numeroDeCuenta, p);
+            int resultadoBusqueda = listCuentas.BinarySearch(cuentaABuscar);
+            return resultadoBusqueda >= 0;
+
+        }
+        bool cuentaExist(Cuenta cuentaABuscar)
+        {
+            return listCuentas.Any(cuentaEnLista => cuentaEnLista.Numero ==  cuentaABuscar.Numero);
+        }
+        #endregion
+
     }
 }
