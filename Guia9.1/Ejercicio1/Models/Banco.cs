@@ -141,11 +141,25 @@ namespace Ejercicio1.Models
             foreach (Cuenta c in listCuentas)
             {
                 //"DNI; nombre; número de cuenta; saldo";
-                listacuenta[n++] = $"{this.GetType().Name};";
+                listacuenta[n++] = $"{c.GetType().Name};{c.Titular.Dni};{c.Titular.Nombre};{c.Numero};{c.Saldo}";
             }
+
+            return listacuenta;
         
         }
 
-        public string[] ObtenerListaStringClientes() { }
+        public string[] ObtenerListaStringClientes() 
+        {
+            string[] listaclientes = new string[CantidadClientes];
+            int n = 0;
+            foreach (Persona c in listClientes)
+            {
+                //"DNI; nombre; número de cuenta; saldo";
+                listaclientes[n++] = $"{c.GetType().Name};{c.Nombre};{c.Dni}";
+            }
+
+            return listaclientes;
+
+        }
     }
 }

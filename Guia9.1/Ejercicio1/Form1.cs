@@ -129,7 +129,40 @@ namespace Ejercicio1
 
         private void btnResguardar_Click(object sender, EventArgs e)
         {
+            SaveFileDialog saveDialog = new SaveFileDialog
+            {
+                InitialDirectory = Application.StartupPath,
+                Title = "Resguardar Datos"
+            };
 
+            if(saveDialog.ShowDialog() != DialogResult.OK) { return; }
+
+            FileStream fs = null;
+            StreamWriter sr = null;
+            try
+            {
+                fs = new FileStream(saveDialog.FileName, FileMode.OpenOrCreate , FileAccess.Write);
+                sr = new StreamWriter(fs);
+
+                string[] clientes = miBanco.ObtenerListaStringClientes();
+                string[] cuentas = miBanco.ObtenerListaStringCuentas();
+                sr.WriteLine("TIPO;DNI;NOMBRE;NUMERODECUENTA;SALDO");
+                foreach(string cliente in clientes)
+                {
+                    sr.WriteLine(cliente);
+                }
+                foreach(string cuenta in cuentas)
+                {
+                    sr.WriteLine(cuenta);
+                }
+
+                MessageBox.Show("Reslpado Exitoso");
+            }catch(Exception ex) { MessageBox.Show(ex.Message); }
+            finally
+            {
+                if(sr!=null) sr.Close();
+                if(fs!=null) fs.Close();
+            }
         }
     }
 }
